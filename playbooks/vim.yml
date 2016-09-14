@@ -1,0 +1,14 @@
+- hosts: all
+  become: yes
+  become_method: sudo
+  tasks: 
+    - name: Installe vim
+      apt: name={{ item }} state=present
+      with_items:
+        - vim-nox
+
+    - name: Configuration de vim
+      copy: src=/etc/ansible/ressources/conf/vim/vimrc dest=/etc/vim/vimrc.local
+
+    - name: Ajout du schema de couleur
+      copy: src=/etc/ansible/ressources/conf/vim/colors/monokai.vim dest=/usr/share/vim/vim74/colors/colors/monokai.vim
