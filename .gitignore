@@ -1,1 +1,9 @@
 hosts
+.ansible/
+.ansible_galaxy
+.bash_history
+.bash_logout
+.bashrc
+.profile
+.ssh/
+.viminfo
