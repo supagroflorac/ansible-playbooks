@@ -1,0 +1,30 @@
+- hosts: servers
+  become: yes
+  become_method: sudo
+  tasks: 
+    - name: Mise à jour des dépôts
+      apt: update_cache=yes
+
+    - name: Mise a jour du système
+      apt: upgrade=dist dpkg_options='force-confold,force-confdef' autoremove=yes
+
+    - name: Check if a reboot is required
+      register: reboot
+      stat: path=/var/run/reboot-required get_md5=no
+
+    - name: Check if kexec is used
+      register: kexec
+      stat: path=/usr/bin/kexec-reboot get_md5=no
+
+    - name: Reboot the services
+      shell: needrestart -ra -l
+      when: reboot.stat.exists == false
+
+    - name: Reboot the server using reboot
+      command: /sbin/reboot
+      when: reboot.stat.exists == true and kexec.stat.exists == false
+
+    - name: Reboot the server using kexec
+      shell: kexec-reboot -lr
+      when: reboot.stat.exists == true and kexec.stat.exists == true
+
