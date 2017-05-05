@@ -1,0 +1,39 @@
+- hosts: docker
+  become: yes
+  become_method: sudo
+  tasks: 
+    - name: Ajoute sur le support de https pour apt et les certificats nécessaires.
+      apt: 
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - software-properties-common
+        - python-pip
+
+    - name: Ajoute la clé du dépôt docker
+      apt_key: 
+        url: "https://download.docker.com/linux/debian/gpg" 
+        state: present
+
+    - name: Ajoute le dépôt docker 
+      apt_repository: 
+        filename: 'docker'    
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian jessie stable
+        update_cache: yes 
+
+    - name: Installe Docker
+      apt: name=docker-ce state=present update_cache=yes
+
+    - name: Ajoute l'utilisateur bredow au groupe docker
+      user: name=bredow groups=docker append=yes
+
+    - name: Lance le service docker
+      service: name=docker state=restarted
+
+    - name: Install docker-compose
+      pip: name=docker-compose state=latest
+
+
+
