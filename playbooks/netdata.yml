@@ -1,0 +1,56 @@
+- hosts: netdata
+  tasks:
+    - name: Installation des pré-requis
+      become: yes
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - autoconf 
+        - autoconf-archive 
+        - autogen 
+        - automake 
+        - curl 
+        - gcc 
+        - git 
+        - libmnl-dev 
+        - make
+        - netcat 
+        - pkg-config
+        - python 
+        - python-requests 
+        - python-yaml 
+        - uuid-dev
+        - zlib1g-dev
+
+    - stat: path=/home/ansible/netdata.git/netdata-updater.sh
+      register: netdata_update_script
+
+    - name: Récupère le dépot git
+      git:
+        repo: 'https://github.com/firehol/netdata.git'
+        dest: '/home/ansible/netdata.git'
+        update: yes
+      when: netdata_update_script.stat.exists == False
+    
+    - name: Installation
+      become: yes
+      shell: "/home/ansible/netdata.git/netdata-installer.sh"
+      args:
+        chdir: "/home/ansible/netdata.giti"
+      when: netdata_update_script.stat.exists == False
+        
+    - name: Mise à jour
+      become: yes
+      shell: "/home/ansible/netdata.git/netdata-updater.sh"
+      args:
+        chdir: "/home/ansible/netdata.git"
+      when: netdata_update_script.stat.exists == True
+
+    - name: Vérifie que le service est bien en route.
+      become: yes
+      systemd:
+        name: netdata
+        state: started
+        daemon_reload: yes
