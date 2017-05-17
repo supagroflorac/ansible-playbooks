@@ -1,7 +1,14 @@
 - hosts: docker
   become: yes
   become_method: sudo
-  tasks: 
+  tasks:
+    - name: Supprimer les anciennes version de docker
+      apt:
+        name: docker-engine
+        state: absent
+        update_cache: yes
+        autoremove: yes
+ 
     - name: Ajoute sur le support de https pour apt et les certificats nécessaires.
       apt: 
         name: "{{ item }}"
@@ -10,7 +17,6 @@
         - apt-transport-https
         - ca-certificates
         - software-properties-common
-        - python-pip
 
     - name: Ajoute la clé du dépôt docker
       apt_key: 
@@ -24,16 +30,29 @@
         update_cache: yes 
 
     - name: Installe Docker
-      apt: name=docker-ce state=present update_cache=yes
+      apt: 
+        name: docker-ce 
+        state: present 
+        update_cache: yes
 
     - name: Ajoute l'utilisateur bredow au groupe docker
       user: name=bredow groups=docker append=yes
 
     - name: Lance le service docker
-      service: name=docker state=restarted
+      service: 
+        name: docker
+        enabled: yes 
+        state: started
 
-    - name: Install docker-compose
-      pip: name=docker-compose state=latest
+    - name : Installe pip
+      easy_install:
+        name: pip
+        state: latest
+
+    - name: Installe docker-compose
+      pip: 
+        name: docker-compose 
+        state: latest
 
 
 
