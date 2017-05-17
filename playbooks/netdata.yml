@@ -38,7 +38,7 @@
       become: yes
       shell: "/home/ansible/netdata.git/netdata-installer.sh"
       args:
-        chdir: "/home/ansible/netdata.giti"
+        chdir: "/home/ansible/netdata.git"
       when: netdata_update_script.stat.exists == False
         
     - name: Mise à jour
