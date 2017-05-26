@@ -1,0 +1,23 @@
+# Config file for sSMTP sendmail
+#
+# The person who gets all mail for userids < 1000
+# Make this empty to disable rewriting.
+root=root-{{ inventory_hostname_short }}@{{ ansible_domain }}
+
+# The place where the mail goes. The actual machine name is required no
+# MX records are consulted. Commonly mailhosts are named mail.domain.com
+mailhub={{ ssmtp_host }}:{{ ssmtp_port | default('587') }}
+
+# Where will the mail seem to come from?
+rewriteDomain={{ ssmtp_rewrite_domain | default(ansible_domain) }}
+
+# Use SSL/TLS before starting negotiation
+UseTLS={{ ssmtp_use_tls | default('YES') }}
+UseSTARTTLS={{ ssmtp_use_start_tls | default('NO') }}
+
+# Username/Password
+AuthUser={{ ssmtp_username }}
+AuthPass={{ ssmtp_password }}
+
+# Email 'From header's can override the default domain?
+FromLineOverride={{ ssmtp_from_line_override | default('YES') }}
