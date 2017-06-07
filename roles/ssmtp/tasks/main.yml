@@ -12,7 +12,7 @@
     dest: /etc/ssmtp/ssmtp.conf
     owner: root
     group: root
-    mode: 0640
+    mode: 0644
   become: true
 
 - name: Initialisation de /etc/ssmtp/revaliases
@@ -21,5 +21,5 @@
     dest: /etc/ssmtp/revaliases
     owner: root
     group: root
-    mode: 0640
+    mode: 0600
   become: true
