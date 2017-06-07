@@ -1,0 +1,10 @@
+- hosts: ssmtp
+  roles:
+    - role: ssmtp
+
+  tasks:
+    - name: Défini le champs GECOS de root
+      user:
+        name: root
+        comment: root-{{ inventory_hostname_short }}
+      become: true
