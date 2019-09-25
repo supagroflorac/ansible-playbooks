@@ -1,0 +1,6 @@
+---
+- include: "timesyncd.yml"
+- include: "users.yml"
+- include: "smtp.yml"
+- include: "apticron.yml"
+- include: "fail2ban.yml"

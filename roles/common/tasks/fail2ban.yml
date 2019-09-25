@@ -1,0 +1,7 @@
+---
+- name: Installe Fail2ban
+  become: true
+  apt:
+    name: apticron
+    state: present
+    update_cache: yes

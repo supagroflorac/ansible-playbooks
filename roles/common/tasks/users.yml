@@ -1,0 +1,35 @@
+# Pour générer le hash du mot passe : openssl passwd -1
+---
+- name: Ajoute le compte de Hamid
+  become: true
+  user:
+    name: amraniha
+    groups: sudo
+    createhome: yes
+    password: '$1$rnRSKI5n$0Dlh985FlYtDQhhvWXQ1z/'
+    update_password: on_create
+    append: yes
+    state: present
+
+- name: Ajoute le compte de Florestan
+  become: true
+  user:
+    name: "bredow"
+    groups: sudo
+    createhome: yes
+    append: yes
+    state: present
+
+- name: Autorise la clé de Hamid
+  become: true
+  authorized_key:
+    user: amraniha
+    state: present
+    key: "{{ lookup('file', 'ressources/amraniha_id_rsa.pub') }}"
+
+- name: Autorise la clé de Florestan
+  become: true
+  authorized_key:
+    user: bredow
+    state: present
+    key: "{{ lookup('file', 'ressources/bredow_id_rsa.pub') }}"

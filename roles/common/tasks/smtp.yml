@@ -1,0 +1,72 @@
+---
+# N'est plus valable a partir de Debain Buster (10)
+- name: Supprime Ssmtp (vieille configuration)
+  become: true
+  apt:
+    name: ssmtp
+    state: absent
+    autoremove: yes
+
+- name: Install exim4 (light)
+  become: true
+  apt:
+    name: exim4-daemon-light
+    state: present
+    update_cache: yes
+
+- name: Initialise la Configuration
+  become: true
+  template:
+    src: update-exim4.conf.conf.j2
+    dest: /etc/exim4/update-exim4.conf.conf
+    owner: root
+    group: root
+    mode: 0644
+  register: eximConf
+
+- name: Active smtps
+  become: true
+  lineinfile:
+    path: /etc/exim4/exim4.conf.template
+    insertafter: '^  driver = smtp$'
+    line: "  protocol = smtps"
+    state: present
+
+- name: Active smtps (bis)
+  become: true
+  lineinfile:
+    path: /etc/exim4/exim4.conf.template
+    insertafter: '^  protocol = smtps$'
+    line: "  hosts_require_auth = {{ exim_host }}"
+    state: present
+
+- name: Ajoute l'identifiant et le mot de passe du serveur SMTP
+  become: true
+  lineinfile:
+    path: /etc/exim4/passwd.client
+    line: "{{ exim_host }}:{{ exim_username}}:{{exim_password}}"
+
+- name: Active la nouvelle configuration
+  become: true
+  shell: "update-exim4.conf"
+  when: eximConf.changed
+
+- name: Modifie les newaliases
+  become: true
+  replace:
+    path: /etc/aliases
+    regexp: '^root: .*$'
+    replace: 'root: {{ exim_root_mail }}'
+  register: aliases
+
+- name: Actualise les Alias
+  become: true
+  shell: "newaliases"
+  when: aliases.changed
+
+- name: Redémarre le service Exim4
+  become: true
+  systemd:
+    name: exim4
+    state: restarted
+    daemon_reload: yes
