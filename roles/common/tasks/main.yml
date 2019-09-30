@@ -1,4 +1,15 @@
 ---
+- name: Installe les logiciels de base
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - acl
+    - vim
+    - tmux
+
 - include: "timesyncd.yml"
 - include: "users.yml"
 - include: "smtp.yml"
