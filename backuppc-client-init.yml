@@ -1,0 +1,11 @@
+- hosts: fileserver
+  roles:
+    - clientBackuppc
+  vars_files:
+    - "group_vars/clients_backuppc_serveur.yml"
+
+- hosts: docker
+  roles:
+    - clientBackuppc
+  vars_files:
+    - "group_vars/clients_backuppc_docker.yml"

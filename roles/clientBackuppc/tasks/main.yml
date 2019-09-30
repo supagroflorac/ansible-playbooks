@@ -1,0 +1,41 @@
+---
+- name: Installe rsync
+  become: true
+  apt:
+    name: rsync
+    state: present
+    update_cache: yes
+
+- name: Ajoute /etc/rsyncd.conf
+  become: true
+  template:
+    src: rsyncd.conf.j2
+    dest: /etc/rsyncd.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ajoute les identifiants
+  become: true
+  template:
+    src: rsyncd.secrets.j2
+    dest: /etc/rsyncd.secrets
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Ajoute l'utilisateur rsync'
+  become: true
+  user:
+    name: "rsync"
+    createhome: no
+    append: yes
+    shell: "/usr/sbin/nologin"
+    state: present
+
+- name: Lance le service rsync
+  become: true
+  service:
+    name: rsync
+    enabled: yes
+    state: started

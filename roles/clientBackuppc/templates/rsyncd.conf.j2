@@ -1,0 +1,13 @@
+uid = {{ rsyncd_user }}
+gid = {{ rsyncd_group }}
+
+{% for item in rsyncd_sharenames %}
+[{{ item.name }}]
+comment = {{ item.comment }}
+path = {{ item.path }}
+read only = false
+secrets file = /etc/rsyncd.secrets
+auth users = {{ rsyncd_user }}
+host allow = {{ rsyncd_backuppc_ip }}
+
+{% endfor %}
