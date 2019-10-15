@@ -9,6 +9,11 @@
     - acl
     - vim
     - tmux
+    - needrestart
+- name: Set timezone to Europe/Paris
+  become: true
+  timezone:
+    name: Europe/Paris
 
 - include: "timesyncd.yml"
 - include: "users.yml"
