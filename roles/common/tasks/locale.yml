@@ -1,0 +1,9 @@
+- name: Active la localité fr_FR.UTF8
+  become: true
+  locale_gen:
+    name: fr_FR.UTF-8
+    state: present
+
+- name: Définis fr_FR.UTF8 par défaut
+  become: true
+  command: localectl set-locale fr_FR.UTF-8

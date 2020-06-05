@@ -10,11 +10,14 @@
     - vim
     - tmux
     - needrestart
+    - fish
+
 - name: Set timezone to Europe/Paris
   become: true
   timezone:
     name: Europe/Paris
 
+- include: "locale.yml"
 - include: "timesyncd.yml"
 - include: "users.yml"
 - include: "smtp.yml"
