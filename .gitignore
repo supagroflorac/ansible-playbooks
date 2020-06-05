@@ -1,4 +1,5 @@
 hosts
-.*
 *.retry
 group_vars/*
+production
+staging
