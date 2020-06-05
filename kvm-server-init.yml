@@ -1,0 +1,4 @@
+- hosts: kvm_servers
+  roles:
+    - kvm
+

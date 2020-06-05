@@ -1,0 +1,13 @@
+- name: Installe les dépendances nécessaires.
+  become: true
+  apt:
+    name: ["qemu-kvm", "libvirt-clients", "libvirt-daemon-system", "virtinst", "lvm2", "bridge-utils"]
+    state: present
+    install_recommends: no
+
+- name: Ajoute bredow et amraniha au groupe libvirt
+  become: true
+  user: name={{ item }} groups=libvirt append=yes
+  with_items:
+    - bredow
+    - amraniha
